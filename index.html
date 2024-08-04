@@ -3,102 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calcolatrice iPhone</title>
-    <link rel="stylesheet" href="styles.css">
-    
-    <!-- Manifest -->
-    <link rel="manifest" href="/manifest.json">
-    
-    <!-- Icone per il PWA -->
-    <link rel="icon" href="icons/icon-192x192.png" type="image/png">
-    
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                .then(registration => {
-                    console.log('Service Worker registered with scope:', registration.scope);
-                })
-                .catch(error => {
-                    console.log('Service Worker registration failed:', error);
-                });
-            });
-        }
-    </script>
+    <title>Calcolatrice Speciale</title>
 </head>
 <body>
     <div class="calculator">
-        <div class="display" id="display">0</div>
+        <div id="display" class="display">0</div>
         <div class="buttons">
-            <button class="button function" id="clear">AC</button>
-            <button class="button function" id="plus-minus">±</button>
-            <button class="button function" id="percent">%</button>
-            <button class="button operator" id="divide">÷</button>
-            <button class="button number" id="7">7</button>
-            <button class="button number" id="8">8</button>
-            <button class="button number" id="9">9</button>
-            <button class="button operator" id="multiply">×</button>
-            <button class="button number" id="4">4</button>
-            <button class="button number" id="5">5</button>
-            <button class="button number" id="6">6</button>
-            <button class="button operator" id="subtract">−</button>
-            <button class="button number" id="1">1</button>
-            <button class="button number" id="2">2</button>
-            <button class="button number" id="3">3</button>
-            <button class="button operator" id="add">+</button>
-            <button class="button number zero" id="0">0</button>
-            <button class="button number" id="decimal">.</button>
-            <button class="button operator" id="equals">=</button>
+            <button id="clear" class="button function">AC</button>
+            <button id="plus-minus" class="button function">±</button>
+            <button id="percent" class="button function">%</button>
+            <button id="divide" class="button operator">÷</button>
+            <button id="7" class="button number">7</button>
+            <button id="8" class="button number">8</button>
+            <button id="9" class="button number">9</button>
+            <button id="multiply" class="button operator">×</button>
+            <button id="4" class="button number">4</button>
+            <button id="5" class="button number">5</button>
+            <button id="6" class="button number">6</button>
+            <button id="subtract" class="button operator">−</button>
+            <button id="1" class="button number">1</button>
+            <button id="2" class="button number">2</button>
+            <button id="3" class="button number">3</button>
+            <button id="add" class="button operator">+</button>
+            <button id="0" class="button number zero">0</button>
+            <button id="decimal" class="button number">.</button>
+            <button id="equals" class="button operator">=</button>
         </div>
     </div>
 
-    <!-- Hidden menu for special slots -->
-    <div class="hidden-menu" id="hiddenMenu">
+    <div id="hiddenMenu" class="hidden-menu">
         <div class="menu-content">
-            <h3>Special Slots</h3>
+            <h3>Slot Speciali</h3>
             <div class="slots">
-                <div class="slot-item">
-                    <input type="text" class="slot-name" id="slot1-name" placeholder="Nome">
-                    <input type="number" class="slot-value" id="slot1" placeholder="Valore">
+                <div class="slot-container" data-slot="1">
+                    <span class="slot-number">1</span>
+                    <input type="text" class="slot-name" placeholder="Nome libro">
+                    <input type="text" class="slot-word" placeholder="Parola">
+                    <input type="number" class="slot-value" placeholder="Valore">
                 </div>
-                <div class="slot-item">
-                    <input type="text" class="slot-name" id="slot2-name" placeholder="Nome">
-                    <input type="number" class="slot-value" id="slot2" placeholder="Valore">
+                <div class="slot-container" data-slot="2">
+                    <span class="slot-number">2</span>
+                    <input type="text" class="slot-name" placeholder="Nome libro">
+                    <input type="text" class="slot-word" placeholder="Parola">
+                    <input type="number" class="slot-value" placeholder="Valore">
                 </div>
-                <div class="slot-item">
-                    <input type="text" class="slot-name" id="slot3-name" placeholder="Nome">
-                    <input type="number" class="slot-value" id="slot3" placeholder="Valore">
+                <div class="slot-container" data-slot="3">
+                    <span class="slot-number">3</span>
+                    <input type="text" class="slot-name" placeholder="Nome libro">
+                    <input type="text" class="slot-word" placeholder="Parola">
+                    <input type="number" class="slot-value" placeholder="Valore">
                 </div>
-                <div class="slot-item">
-                    <input type="text" class="slot-name" id="slot4-name" placeholder="Nome">
-                    <input type="number" class="slot-value" id="slot4" placeholder="Valore">
+                <div class="slot-container" data-slot="4">
+                    <span class="slot-number">4</span>
+                    <input type="text" class="slot-name" placeholder="Nome libro">
+                    <input type="text" class="slot-word" placeholder="Parola">
+                    <input type="number" class="slot-value" placeholder="Valore">
                 </div>
-                <div class="slot-item">
-                    <input type="text" class="slot-name" id="slot5-name" placeholder="Nome">
-                    <input type="number" class="slot-value" id="slot5" placeholder="Valore">
+                <div class="slot-container" data-slot="5">
+                    <span class="slot-number">5</span>
+                    <input type="text" class="slot-name" placeholder="Nome libro">
+                    <input type="text" class="slot-word" placeholder="Parola">
+                    <input type="number" class="slot-value" placeholder="Valore">
                 </div>
-                <div class="slot-item">
-                    <input type="text" class="slot-name" id="slot6-name" placeholder="Nome">
-                    <input type="number" class="slot-value" id="slot6" placeholder="Valore">
-                </div>
-                <div class="slot-item">
-                    <input type="text" class="slot-name" id="slot7-name" placeholder="Nome">
-                    <input type="number" class="slot-value" id="slot7" placeholder="Valore">
-                </div>
-                <div class="slot-item">
-                    <input type="text" class="slot-name" id="slot8-name" placeholder="Nome">
-                    <input type="number" class="slot-value" id="slot8" placeholder="Valore">
-                </div>
-                <div class="slot-item">
-                    <input type="text" class="slot-name" id="slot9-name" placeholder="Nome">
-                    <input type="number" class="slot-value" id="slot9" placeholder="Valore">
+                <div class="slot-container" data-slot="6">
+                    <span class="slot-number">6</span>
+                    <input type="text" class="slot-name" placeholder="Nome libro">
+                    <input type="text" class="slot-word" placeholder="Parola">
+                    <input type="number" class="slot-value" placeholder="Valore">
                 </div>
             </div>
-            <button class="button" id="closeMenu">Close</button>
+            <button id="saveSlots" class="save-button">Salva e Chiudi</button>
         </div>
     </div>
-
-    <script src="script.js"></script>
 </body>
 </html>
-+
