@@ -2,11 +2,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const display = document.getElementById('display');
     const buttons = document.querySelectorAll('.button');
     const hiddenMenu = document.getElementById('hiddenMenu');
-    const closeMenuButton = document.getElementById('closeMenu');
+    const saveButton = document.getElementById('saveSlots');
     const percentButton = document.getElementById('percent');
     const plusMinusButton = document.getElementById('plus-minus');
     const slotContainers = document.querySelectorAll('.slot-container');
-    const slots = document.querySelectorAll('.slot-value');
     let percentPressCount = 0;
     let selectedSlotIndex = -1;
     let currentOperation = '';
@@ -16,16 +15,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     buttons.forEach(button => {
         button.addEventListener('click', () => {
-            handleButtonClick(button.id);
+            handleButtonClick(button);
         });
     });
 
-    closeMenuButton.addEventListener('click', () => {
+    saveButton.addEventListener('click', () => {
         hiddenMenu.style.display = 'none';
-        resetCalculator();
+        saveSlotValues();
     });
 
-    function handleButtonClick(buttonId) {
+    function handleButtonClick(button) {
+        button.classList.add('flash');
+        setTimeout(() => button.classList.remove('flash'), 200);
+
+        const buttonId = button.id;
         if (buttonId === 'percent') {
             handlePercentButtonClick();
         } else if (buttonId === 'plus-minus') {
@@ -52,16 +55,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function handlePlusMinusButtonClick() {
-        if (selectedSlotIndex !== -1) {
-            const currentButton = slotContainers[selectedSlotIndex];
-            currentButton.classList.remove('highlighted');
-        }
         selectedSlotIndex = (selectedSlotIndex + 1) % slotContainers.length;
-        const selectedButton = slotContainers[selectedSlotIndex];
-        selectedButton.classList.add('highlighted');
-        setTimeout(() => {
-            selectedButton.classList.remove('highlighted');
-        }, 500);
+        const selectedButton = document.getElementById(String(selectedSlotIndex + 1));
+        if (selectedButton) {
+            selectedButton.classList.add('flash');
+            setTimeout(() => selectedButton.classList.remove('flash'), 200);
+        }
+    }
+
+    function saveSlotValues() {
+        slotContainers.forEach((container, index) => {
+            const name = container.querySelector('.slot-name').value;
+            const word = container.querySelector('.slot-word').value;
+            const value = container.querySelector('.slot-value').value;
+            // Salva questi valori dove necessario (es. localStorage)
+            console.log(`Slot ${index + 1}: ${name}, ${word}, ${value}`);
+        });
     }
 
     function clearCalculator() {
@@ -71,17 +80,10 @@ document.addEventListener('DOMContentLoaded', function() {
         operator = '';
     }
 
-    function resetCalculator() {
-        display.textContent = '0';
-        firstOperand = '';
-        secondOperand = '';
-        operator = '';
-        selectedSlotIndex = -1;
-    }
-
     function calculateResult() {
         if (operator === 'multiply' && selectedSlotIndex !== -1) {
-            display.textContent = slots[selectedSlotIndex].value || '0';
+            const slotValue = document.querySelector(`[data-slot="${selectedSlotIndex + 1}"] .slot-value`).value;
+            display.textContent = slotValue || '0';
         } else {
             secondOperand = display.textContent;
             let result = 0;
@@ -110,13 +112,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!display.textContent.includes('.')) {
             display.textContent += '.';
         }
-        addHighlight(document.getElementById('decimal'));
     }
 
     function handleOperator(nextOperator) {
         firstOperand = display.textContent;
         operator = nextOperator;
-        display.textContent = '';
+        display.textContent = '0';
     }
 
     function inputNumber(number) {
@@ -125,12 +126,5 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             display.textContent += number;
         }
-    }
-
-    function addHighlight(button) {
-        button.classList.add('highlighted');
-        setTimeout(() => {
-            button.classList.remove('highlighted');
-        }, 500);
     }
 });
