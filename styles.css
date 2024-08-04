@@ -1,3 +1,4 @@
+/* Reset base styling */
 body {
     font-family: 'Helvetica Neue', sans-serif;
     display: flex;
@@ -25,12 +26,14 @@ body {
     margin-bottom: 10px;
 }
 
+/* Button grid layout */
 .buttons {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-gap: 10px;
 }
 
+/* General button styling */
 .button {
     padding: 20px;
     font-size: 1.5rem;
@@ -43,11 +46,13 @@ body {
     justify-content: center;
 }
 
+/* Special styling for zero button */
 .button.zero {
     grid-column: span 2;
     border-radius: 40px;
 }
 
+/* Styling for function, operator, and number buttons */
 .button.function {
     background-color: #a5a5a5;
     color: #000;
@@ -63,6 +68,7 @@ body {
     color: #fff;
 }
 
+/* Hidden menu styling */
 .hidden-menu {
     display: none;
     position: fixed;
@@ -76,6 +82,7 @@ body {
     z-index: 1000;
 }
 
+/* Menu content styling */
 .menu-content {
     background-color: #1c1c1e;
     padding: 20px;
@@ -85,6 +92,7 @@ body {
     color: #fff;
 }
 
+/* Slot container styling */
 .slot-container {
     display: flex;
     flex-wrap: wrap;
@@ -92,6 +100,7 @@ body {
     margin-bottom: 10px;
 }
 
+/* Styling for slot numbers, names, words, and values */
 .slot-number {
     width: 10%;
     text-align: center;
@@ -108,6 +117,7 @@ body {
     color: #fff;
 }
 
+/* Save button styling */
 .save-button {
     width: 100%;
     padding: 10px;
@@ -120,11 +130,12 @@ body {
     margin-top: 10px;
 }
 
-.button.flash {
-    animation: flash 0.2s;
+/* Flash animation for buttons and slot numbers */
+.button.flash, .slot-number.flash {
+    animation: flash 0.5s;
 }
 
 @keyframes flash {
-    0% { background-color: #ff9500; }
-    100% { background-color: initial; }
+    0% { background-color: #fff; } /* Color almost white */
+    100% { background-color: initial; } /* Returns to default color */
 }
