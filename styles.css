@@ -1,0 +1,135 @@
+body {
+    font-family: 'Helvetica Neue', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #000;
+    margin: 0;
+}
+
+.calculator {
+    width: 320px;
+    height: 540px;
+    background-color: #000;
+    border-radius: 20px;
+    display: grid;
+    grid-template-rows: 1fr 4fr;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.display {
+    background-color: #000;
+    color: #fff;
+    text-align: right;
+    padding: 0 20px;
+    font-size: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    border-radius: 10px;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 10px;
+    padding-top: 20px;
+}
+
+.button {
+    padding: 20px;
+    font-size: 1.5rem;
+    border: none;
+    outline: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.5s ease;
+}
+
+.button.zero {
+    grid-column: span 2;
+    border-radius: 40px;
+}
+
+.button.function {
+    background-color: #a5a5a5;
+    color: #000;
+}
+
+.button.operator {
+    background-color: #ff9500;
+    color: #fff;
+}
+
+.button.number {
+    background-color: #333;
+    color: #fff;
+}
+
+.hidden-menu {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+}
+
+.menu-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 90%;
+    max-width: 300px;
+}
+
+.slot-container {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+    max-width: 100%;
+}
+
+.slot-number {
+    font-size: 1rem;
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+.slot-name, .slot-value {
+    width: 80px;
+    margin-right: 10px;
+    padding: 5px;
+    font-size: 0.9rem;
+}
+
+.slot {
+    width: 80px;
+}
+
+.highlight {
+    background-color: yellow !important;
+}
+
+.highlighted {
+    animation: highlight 0.5s ease;
+}
+
+@keyframes highlight {
+    from {
+        background-color: #333;
+    }
+    to {
+        background-color: #ff9500;
+    }
+}
