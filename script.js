@@ -3,15 +3,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const buttons = document.querySelectorAll('.button');
     const hiddenMenu = document.getElementById('hiddenMenu');
     const closeMenuButton = document.getElementById('closeMenu');
-    const percentButton = document.getElementById('percent');
-    const plusMinusButton = document.getElementById('plus-minus');
     const slotButtons = document.querySelectorAll('.slot-button');
     const slotInputs = document.querySelectorAll('.slot-input');
     let percentPresses = [];
     let selectedSlotIndex = 1;
-    let currentOperation = '';
     let firstOperand = '';
-    let secondOperand = '';
     let operator = '';
     let shouldResetDisplay = false;
     const slots = {
@@ -44,35 +40,32 @@ document.addEventListener('DOMContentLoaded', function() {
             handleOperator(button);
         } else if (buttonId === 'equals') {
             calculateResult();
-            highlightButton(button);
         } else if (buttonId === 'decimal') {
             inputDecimal();
-            highlightButton(button);
         } else {
             inputNumber(buttonId);
-            highlightButton(button);
         }
 
-        if (!['divide', 'multiply', 'subtract', 'add'].includes(buttonId)) {
-            resetOperators();
-        }
+        highlightButton(button);
     }
 
     function handleSpecialFunction(button) {
-        highlightButton(button);
-        if (button.id === 'percent') {
-            handlePercentButtonClick();
-        } else if (button.id === 'plus-minus') {
-            handlePlusMinusButtonClick();
-        } else if (button.id === 'clear') {
-            clearCalculator();
+        switch (button.id) {
+            case 'percent':
+                handlePercentButtonClick();
+                break;
+            case 'plus-minus':
+                handlePlusMinusButtonClick();
+                break;
+            case 'clear':
+                clearCalculator();
+                break;
         }
     }
 
     function handlePercentButtonClick() {
         const now = Date.now();
         percentPresses.push(now);
-        
         percentPresses = percentPresses.filter(time => now - time <= 1500);
 
         if (percentPresses.length === 3) {
@@ -87,25 +80,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function handlePlusMinusButtonClick() {
-        if (hiddenMenu.style.display === 'flex') {
-            const currentValue = parseFloat(display.textContent.replace(/\./g, '').replace(',', '.'));
-            display.textContent = (-currentValue).toString();
-            updateDisplay();
-        } else {
-            selectedSlotIndex = selectedSlotIndex % 3 + 1;
-            highlightSelectedSlot();
-        }
+        const currentValue = parseFloat(display.textContent.replace(/\./g, '').replace(',', '.'));
+        display.textContent = (-currentValue).toString();
+        updateDisplay();
     }
 
     function updateSlotInputs() {
         slotInputs[0].value = slots[selectedSlotIndex].name;
         slotInputs[1].value = slots[selectedSlotIndex].phrase;
         slotInputs[2].value = slots[selectedSlotIndex].value;
-    }
-
-    function highlightSelectedSlot() {
-        const numberButton = document.getElementById(selectedSlotIndex.toString());
-        highlightButton(numberButton);
     }
 
     function highlightButton(button) {
@@ -116,11 +99,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function handleOperator(button) {
+        if (firstOperand === '') {
+            firstOperand = display.textContent.replace(/\./g, '').replace(',', '.');
+        } else {
+            calculateResult();
+        }
+        operator = button.id;
+        shouldResetDisplay = true;
         resetOperators();
         button.classList.add('active');
-        operator = button.id;
-        firstOperand = display.textContent.replace(/\./g, '').replace(',', '.');
-        shouldResetDisplay = true;
     }
 
     function resetOperators() {
@@ -130,7 +117,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function clearCalculator() {
         display.textContent = '0';
         firstOperand = '';
-        secondOperand = '';
         operator = '';
         shouldResetDisplay = false;
         resetOperators();
@@ -138,11 +124,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function calculateResult() {
-        if (operator === 'multiply' && selectedSlotIndex !== -1) {
-            display.textContent = slots[selectedSlotIndex].value || '0';
-        } else {
-            secondOperand = display.textContent.replace(/\./g, '').replace(',', '.');
-            let result = 0;
+        if (operator && firstOperand !== '') {
+            const secondOperand = display.textContent.replace(/\./g, '').replace(',', '.');
+            let result;
             switch (operator) {
                 case 'add':
                     result = parseFloat(firstOperand) + parseFloat(secondOperand);
@@ -158,13 +142,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     break;
             }
             display.textContent = result.toString();
+            firstOperand = '';
+            operator = '';
+            shouldResetDisplay = true;
+            resetOperators();
+            updateDisplay();
         }
-        firstOperand = display.textContent;
-        operator = '';
-        secondOperand = '';
-        shouldResetDisplay = true;
-        resetOperators();
-        updateDisplay();
     }
 
     function inputDecimal() {
@@ -188,8 +171,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     slotInputs.forEach((input, index) => {
-        input.addEventListener('input', () => {
-            if (index === 0) slots[slotInputs.forEach((input, index) => {
         input.addEventListener('input', () => {
             if (index === 0) slots[selectedSlotIndex].name = input.value;
             else if (index === 1) slots[selectedSlotIndex].phrase = input.value;
@@ -222,5 +203,3 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inizializza il display
     updateDisplay();
 });
-
-                
