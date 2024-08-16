@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
             percentPresses = [];
             updateSlotInputs();
         } else {
-            const currentValue = parseFloat(display.textContent);
+            const currentValue = parseFloat(display.textContent.replace(/\./g, '').replace(',', '.'));
             display.textContent = (currentValue / 100).toString();
             updateDisplay();
         }
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function handlePlusMinusButtonClick() {
         if (hiddenMenu.style.display === 'flex') {
-            const currentValue = parseFloat(display.textContent);
+            const currentValue = parseFloat(display.textContent.replace(/\./g, '').replace(',', '.'));
             display.textContent = (-currentValue).toString();
             updateDisplay();
         } else {
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
         resetOperators();
         button.classList.add('active');
         operator = button.id;
-        firstOperand = display.textContent;
+        firstOperand = display.textContent.replace(/\./g, '').replace(',', '.');
         shouldResetDisplay = true;
     }
 
@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (operator === 'multiply' && selectedSlotIndex !== -1) {
             display.textContent = slots[selectedSlotIndex].value || '0';
         } else {
-            secondOperand = display.textContent;
+            secondOperand = display.textContent.replace(/\./g, '').replace(',', '.');
             let result = 0;
             switch (operator) {
                 case 'add':
@@ -169,10 +169,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function inputDecimal() {
         if (shouldResetDisplay) {
-            display.textContent = '0.';
+            display.textContent = '0,';
             shouldResetDisplay = false;
-        } else if (!display.textContent.includes('.')) {
-            display.textContent += '.';
+        } else if (!display.textContent.includes(',')) {
+            display.textContent += ',';
         }
         updateDisplay();
     }
@@ -189,6 +189,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     slotInputs.forEach((input, index) => {
         input.addEventListener('input', () => {
+            if (index === 0) slots[slotInputs.forEach((input, index) => {
+        input.addEventListener('input', () => {
             if (index === 0) slots[selectedSlotIndex].name = input.value;
             else if (index === 1) slots[selectedSlotIndex].phrase = input.value;
             else if (index === 2) slots[selectedSlotIndex].value = input.value;
@@ -196,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function formatNumber(number) {
-        let parts = number.toString().split('.');
+        let parts = number.split(',');
         parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         return parts.join(',');
     }
@@ -204,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateDisplay() {
         let content = display.textContent;
         if (content !== '0' && content !== '-0') {
-            let formattedNumber = formatNumber(parseFloat(content));
+            let formattedNumber = formatNumber(content);
             display.textContent = formattedNumber;
         }
         
@@ -216,4 +218,9 @@ document.addEventListener('DOMContentLoaded', function() {
             display.style.fontSize = `${fontSize}rem`;
         }
     }
+
+    // Inizializza il display
+    updateDisplay();
 });
+
+                
