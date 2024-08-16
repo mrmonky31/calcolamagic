@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let firstOperand = '';
     let secondOperand = '';
     let operator = '';
+    let shouldResetDisplay = false;
     const slots = {
         1: { name: '', phrase: '', value: '' },
         2: { name: '', phrase: '', value: '' },
@@ -20,9 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     buttons.forEach(button => {
-        button.addEventListener('click', () => {
-            handleButtonClick(button);
-        });
+        button.addEventListener('click', () => handleButtonClick(button));
     });
 
     closeMenuButton.addEventListener('click', () => {
@@ -45,6 +44,9 @@ document.addEventListener('DOMContentLoaded', function() {
             handleOperator(button);
         } else if (buttonId === 'equals') {
             calculateResult();
+            highlightButton(button);
+        } else if (buttonId === 'decimal') {
+            inputDecimal();
             highlightButton(button);
         } else {
             inputNumber(buttonId);
@@ -71,7 +73,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const now = Date.now();
         percentPresses.push(now);
         
-        // Rimuovi le pressioni più vecchie di 1.5 secondi
         percentPresses = percentPresses.filter(time => now - time <= 1500);
 
         if (percentPresses.length === 3) {
@@ -117,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
         button.classList.add('active');
         operator = button.id;
         firstOperand = display.textContent;
-        display.textContent = '';
+        shouldResetDisplay = true;
     }
 
     function resetOperators() {
@@ -129,14 +130,15 @@ document.addEventListener('DOMContentLoaded', function() {
         firstOperand = '';
         secondOperand = '';
         operator = '';
+        shouldResetDisplay = false;
         resetOperators();
     }
 
     function calculateResult() {
-        secondOperand = display.textContent;
-        if (operator === 'multiply') {
+        if (operator === 'multiply' && selectedSlotIndex !== -1) {
             display.textContent = slots[selectedSlotIndex].value || '0';
         } else {
+            secondOperand = display.textContent;
             let result = 0;
             switch (operator) {
                 case 'add':
@@ -144,6 +146,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     break;
                 case 'subtract':
                     result = parseFloat(firstOperand) - parseFloat(secondOperand);
+                    break;
+                case 'multiply':
+                    result = parseFloat(firstOperand) * parseFloat(secondOperand);
                     break;
                 case 'divide':
                     result = parseFloat(firstOperand) / parseFloat(secondOperand);
@@ -154,18 +159,23 @@ document.addEventListener('DOMContentLoaded', function() {
         firstOperand = display.textContent;
         operator = '';
         secondOperand = '';
+        shouldResetDisplay = true;
         resetOperators();
     }
 
     function inputDecimal() {
-        if (!display.textContent.includes('.')) {
+        if (shouldResetDisplay) {
+            display.textContent = '0.';
+            shouldResetDisplay = false;
+        } else if (!display.textContent.includes('.')) {
             display.textContent += '.';
         }
     }
 
     function inputNumber(number) {
-        if (display.textContent === '0' || operator !== '') {
+        if (display.textContent === '0' || shouldResetDisplay) {
             display.textContent = number;
+            shouldResetDisplay = false;
         } else {
             display.textContent += number;
         }
@@ -178,4 +188,10 @@ document.addEventListener('DOMContentLoaded', function() {
             else if (index === 2) slots[selectedSlotIndex].value = input.value;
         });
     });
+
+    function updateDisplay() {
+        if (display.textContent.length > 9) {
+            display.textContent = parseFloat(display.textContent).toExponential(3);
+        }
+    }
 });
