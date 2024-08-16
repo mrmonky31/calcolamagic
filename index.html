@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcolatrice Magica</title>
+    <link rel="stylesheet" href="/calcolamagic/styles.css">
+    <link rel="manifest" href="/calcolamagic/manifest.json">
+    <meta name="theme-color" content="#ff9500">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Calcolatrice Magica">
+    <link rel="apple-touch-icon" href="/calcolamagic/icon-192x192.png">
+    <script>
+        // Gestione dei reindirizzamenti
+        (function(){
+            var redirect = sessionStorage.redirect;
+            delete sessionStorage.redirect;
+            if (redirect && redirect != location.href) {
+                history.replaceState(null, null, redirect);
+            }
+        })();
+
+        // Registrazione del Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/calcolamagic/sw.js')
+                    .then(reg => console.log('Service worker registrato!'))
+                    .catch(err => console.log('Errore nella registrazione del service worker:', err));
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="calculator">
+        <div id="display" class="display">0</div>
+        <div class="buttons">
+            <button id="clear" class="button function">AC</button>
+            <button id="plus-minus" class="button function">±</button>
+            <button id="percent" class="button function">%</button>
+            <button id="divide" class="button operator">÷</button>
+            <button id="7" class="button number">7</button>
+            <button id="8" class="button number">8</button>
+            <button id="9" class="button number">9</button>
+            <button id="multiply" class="button operator">×</button>
+            <button id="4" class="button number">4</button>
+            <button id="5" class="button number">5</button>
+            <button id="6" class="button number">6</button>
+            <button id="subtract" class="button operator">−</button>
+            <button id="1" class="button number">1</button>
+            <button id="2" class="button number">2</button>
+            <button id="3" class="button number">3</button>
+            <button id="add" class="button operator">+</button>
+            <button id="0" class="button number zero">0</button>
+            <button id="decimal" class="button number">.</button>
+            <button id="equals" class="button equals">=</button>
+        </div>
+    </div>
+
+    <div id="hiddenMenu" class="hidden-menu">
+        <div class="menu-content">
+            <h3>Slot Magici</h3>
+            <div id="slots" class="slots">
+                <div class="slot-container">
+                    <label class="slot-label" for="slotBookName">Nome libro:</label>
+                    <input type="text" id="slotBookName" class="slot-input">
+                </div>
+                <div class="slot-container">
+                    <label class="slot-label" for="slotPhrase">Frase:</label>
+                    <input type="text" id="slotPhrase" class="slot-input">
+                </div>
+                <div class="slot-container">
+                    <label class="slot-label" for="slotValue">Valore:</label>
+                    <input type="text" id="slotValue" class="slot-input">
+                </div>
+            </div>
+            <div class="slot-buttons">
+                <button class="slot-button" data-slot="1">Slot 1</button>
+                <button class="slot-button" data-slot="2">Slot 2</button>
+                <button class="slot-button" data-slot="3">Slot 3</button>
+            </div>
+            <button id="closeMenu">Chiudi</button>
+        </div>
+    </div>
+
+    <script src="/calcolamagic/script.js"></script>
+</body>
+</html>
