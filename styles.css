@@ -18,6 +18,12 @@ body {
     padding: 20px;
     box-sizing: border-box;
 }
+@supports (-webkit-overflow-scrolling: touch) {
+    body {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+}
 
 .display {
     background-color: #000;
