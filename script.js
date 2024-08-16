@@ -180,7 +180,18 @@ document.addEventListener('DOMContentLoaded', function() {
             display.textContent += number;
         }
     }
+    
+function handleOperator(button) {
+    resetOperators();
+    button.classList.add('active');
+    operator = button.id;
+    firstOperand = display.textContent;
+    shouldResetDisplay = true;
+}
 
+function resetOperators() {
+    document.querySelectorAll('.operator').forEach(op => op.classList.remove('active'));
+}
     slotInputs.forEach((input, index) => {
         input.addEventListener('input', () => {
             if (index === 0) slots[selectedSlotIndex].name = input.value;
