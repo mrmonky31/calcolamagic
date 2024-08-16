@@ -185,16 +185,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function formatNumber(number) {
-        let parts = number.toString().split('.');
-        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        return parts.join(',');
+    let [integerPart, decimalPart] = number.split(',');
+    integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return decimalPart ? `${integerPart},${decimalPart}` : integerPart;
     }
 
     function updateDisplay() {
-        let content = display.textContent;
-        if (content !== '0' && content !== '-0') {
-            let formattedNumber = formatNumber(parseFloat(content));
-            display.textContent = formattedNumber;
+    let content = display.textContent;
+    if (content !== '0' && content !== '-0') {
+        let formattedNumber = formatNumber(content);
+        display.textContent = formattedNumber;
         }
         
         // Ridimensiona il testo se necessario
