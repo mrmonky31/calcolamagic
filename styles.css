@@ -24,7 +24,6 @@ body {
     display: flex;
     align-items: flex-end;
     justify-content: flex-end;
-    font-size: 5.5rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -34,14 +33,9 @@ body {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 11px;
-    padding: 0 8px 8px;
-    margin-bottom: 15%; /* Aggiunto per alzare i tasti */
+    padding: 0 8px;
+    margin-bottom: 15%;
 }
-
-@media (max-height: 700px) {
-    .buttons {
-        margin-bottom: 10%; /* Regolazione per schermi più piccoli */
-    }
 
 .button {
     border: none;
@@ -159,7 +153,7 @@ body {
 @media (max-height: 700px) {
     .display {
         font-size: 4.5rem;
-        min-height: 100px;
+        height: 20vh;
     }
     .button {
         width: 70px;
@@ -168,5 +162,8 @@ body {
     }
     .zero {
         width: 151px;
+    }
+    .buttons {
+        margin-bottom: 10%;
     }
 }
