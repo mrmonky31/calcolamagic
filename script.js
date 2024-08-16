@@ -82,6 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             const currentValue = parseFloat(display.textContent);
             display.textContent = (currentValue / 100).toString();
+            updateDisplay();
         }
     }
 
@@ -89,6 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (hiddenMenu.style.display === 'flex') {
             const currentValue = parseFloat(display.textContent);
             display.textContent = (-currentValue).toString();
+            updateDisplay();
         } else {
             selectedSlotIndex = selectedSlotIndex % 3 + 1;
             highlightSelectedSlot();
@@ -132,6 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
         operator = '';
         shouldResetDisplay = false;
         resetOperators();
+        updateDisplay();
     }
 
     function calculateResult() {
@@ -161,6 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
         secondOperand = '';
         shouldResetDisplay = true;
         resetOperators();
+        updateDisplay();
     }
 
     function inputDecimal() {
@@ -170,6 +174,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (!display.textContent.includes('.')) {
             display.textContent += '.';
         }
+        updateDisplay();
     }
 
     function inputNumber(number) {
@@ -179,19 +184,9 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             display.textContent += number;
         }
+        updateDisplay();
     }
-    
-function handleOperator(button) {
-    resetOperators();
-    button.classList.add('active');
-    operator = button.id;
-    firstOperand = display.textContent;
-    shouldResetDisplay = true;
-}
 
-function resetOperators() {
-    document.querySelectorAll('.operator').forEach(op => op.classList.remove('active'));
-}
     slotInputs.forEach((input, index) => {
         input.addEventListener('input', () => {
             if (index === 0) slots[selectedSlotIndex].name = input.value;
@@ -200,9 +195,25 @@ function resetOperators() {
         });
     });
 
+    function formatNumber(number) {
+        let parts = number.toString().split('.');
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        return parts.join(',');
+    }
+
     function updateDisplay() {
-        if (display.textContent.length > 9) {
-            display.textContent = parseFloat(display.textContent).toExponential(3);
+        let content = display.textContent;
+        if (content !== '0' && content !== '-0') {
+            let formattedNumber = formatNumber(parseFloat(content));
+            display.textContent = formattedNumber;
+        }
+        
+        // Ridimensiona il testo se necessario
+        let fontSize = 5.5;
+        display.style.fontSize = `${fontSize}rem`;
+        while (display.scrollWidth > display.offsetWidth && fontSize > 1) {
+            fontSize -= 0.5;
+            display.style.fontSize = `${fontSize}rem`;
         }
     }
 });
