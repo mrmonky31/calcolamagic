@@ -80,9 +80,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function handlePlusMinusButtonClick() {
-        const currentValue = parseFloat(display.textContent.replace(/\./g, '').replace(',', '.'));
-        display.textContent = (-currentValue).toString();
-        updateDisplay();
+        if (hiddenMenu.style.display !== 'flex') {
+            selectedSlotIndex = selectedSlotIndex % 3 + 1;
+            const slotButton = document.querySelector(`[data-slot="${selectedSlotIndex}"]`);
+            highlightButton(slotButton);
+        } else {
+            const currentValue = parseFloat(display.textContent.replace(/\./g, '').replace(',', '.'));
+            display.textContent = (-currentValue).toString();
+            updateDisplay();
+        }
     }
 
     function updateSlotInputs() {
@@ -179,9 +185,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function formatNumber(number) {
-        let parts = number.split(',');
-        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        return parts.join(',');
+        let [integerPart, decimalPart] = number.split(',');
+        integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        return decimalPart ? `${integerPart},${decimalPart}` : integerPart;
     }
 
     function updateDisplay() {
