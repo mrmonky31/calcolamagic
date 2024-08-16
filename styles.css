@@ -1,87 +1,67 @@
 body {
-    font-family: 'Helvetica Neue', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
     height: 100vh;
     background-color: #000;
-    margin: 0;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
 }
 
 .calculator {
-    width: 320px;
-    height: 540px;
-    background-color: #000;
-    border-radius: 20px;
-    display: grid;
-    grid-template-rows: 1fr 4fr;
-    padding: 20px;
-    box-sizing: border-box;
-}
-@supports (-webkit-overflow-scrolling: touch) {
-    body {
-        padding-top: env(safe-area-inset-top);
-        padding-bottom: env(safe-area-inset-bottom);
-    }
+    width: 100%;
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
 .display {
-    background-color: #000;
-    color: #fff;
     text-align: right;
-    padding: 0 20px;
-    font-size: 3.5rem;
+    font-size: 5.5rem;
+    padding: 20px;
+    min-height: 20vh;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: flex-end;
-    border-radius: 10px;
 }
 
 .buttons {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-gap: 10px;
-    padding-top: 20px;
+    gap: 1px;
 }
 
 .button {
-    width: 65px;
-    height: 65px;
-    font-size: 1.5rem;
     border: none;
-    outline: none;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s ease;
+    font-size: 2rem;
+    padding: 1.5rem 0;
+    text-align: center;
+    transition: filter 0.3s;
 }
 
-.button.zero {
-    width: 140px;
-    grid-column: span 2;
-    border-radius: 35px;
+.button:active {
+    filter: brightness(130%);
 }
 
-.button.function {
+.function {
     background-color: #a5a5a5;
     color: #000;
 }
 
-.button.operator {
-    background-color: #ff9500;
+.number, .decimal {
+    background-color: #333333;
     color: #fff;
 }
 
-.button.number, .button.equals {
-    background-color: #333;
+.operator {
+    background-color: #ff9f0a;
     color: #fff;
 }
 
-.button.operator.active {
-    background-color: #fff;
-    color: #ff9500;
+.zero {
+    grid-column: span 2;
+    text-align: left;
+    padding-left: 2rem;
 }
 
 .hidden-menu {
@@ -115,6 +95,7 @@ body {
 .slot-label {
     font-weight: bold;
     margin-bottom: 5px;
+    color: #000;
 }
 
 .slot-input {
@@ -129,10 +110,10 @@ body {
     margin-top: 10px;
 }
 
-.slot-button {
+.slot-button, #closeMenu {
     margin: 0 5px;
     padding: 5px 10px;
-    background-color: #ff9500;
+    background-color: #ff9f0a;
     color: white;
     border: none;
     border-radius: 5px;
@@ -149,17 +130,12 @@ body {
     100% { background-color: #333; }
 }
 
-#closeMenu {
-    margin-top: 15px;
-    padding: 10px 20px;
-    background-color: #ff9500;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#closeMenu:hover {
-    background-color: #e68a00;
+@media (max-height: 700px) {
+    .display {
+        font-size: 4.5rem;
+    }
+    .button {
+        font-size: 1.5rem;
+        padding: 1.2rem 0;
+    }
 }
