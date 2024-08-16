@@ -3,11 +3,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const buttons = document.querySelectorAll('.button');
     const hiddenMenu = document.getElementById('hiddenMenu');
     const closeMenuButton = document.getElementById('closeMenu');
+    const percentButton = document.getElementById('percent');
+    const plusMinusButton = document.getElementById('plus-minus');
     const slotButtons = document.querySelectorAll('.slot-button');
     const slotInputs = document.querySelectorAll('.slot-input');
     let percentPresses = [];
     let selectedSlotIndex = 1;
+    let currentOperation = '';
     let firstOperand = '';
+    let secondOperand = '';
     let operator = '';
     let shouldResetDisplay = false;
     const slots = {
@@ -40,32 +44,35 @@ document.addEventListener('DOMContentLoaded', function() {
             handleOperator(button);
         } else if (buttonId === 'equals') {
             calculateResult();
+            highlightButton(button);
         } else if (buttonId === 'decimal') {
             inputDecimal();
+            highlightButton(button);
         } else {
             inputNumber(buttonId);
+            highlightButton(button);
         }
 
-        highlightButton(button);
+        if (!['divide', 'multiply', 'subtract', 'add'].includes(buttonId)) {
+            resetOperators();
+        }
     }
 
     function handleSpecialFunction(button) {
-        switch (button.id) {
-            case 'percent':
-                handlePercentButtonClick();
-                break;
-            case 'plus-minus':
-                handlePlusMinusButtonClick();
-                break;
-            case 'clear':
-                clearCalculator();
-                break;
+        highlightButton(button);
+        if (button.id === 'percent') {
+            handlePercentButtonClick();
+        } else if (button.id === 'plus-minus') {
+            handlePlusMinusButtonClick();
+        } else if (button.id === 'clear') {
+            clearCalculator();
         }
     }
 
     function handlePercentButtonClick() {
         const now = Date.now();
         percentPresses.push(now);
+        
         percentPresses = percentPresses.filter(time => now - time <= 1500);
 
         if (percentPresses.length === 3) {
@@ -73,21 +80,18 @@ document.addEventListener('DOMContentLoaded', function() {
             percentPresses = [];
             updateSlotInputs();
         } else {
-            const currentValue = parseFloat(display.textContent.replace(/\./g, '').replace(',', '.'));
+            const currentValue = parseFloat(display.textContent);
             display.textContent = (currentValue / 100).toString();
-            updateDisplay();
         }
     }
 
     function handlePlusMinusButtonClick() {
-        if (hiddenMenu.style.display !== 'flex') {
-            selectedSlotIndex = selectedSlotIndex % 3 + 1;
-            const slotButton = document.querySelector(`[data-slot="${selectedSlotIndex}"]`);
-            highlightButton(slotButton);
-        } else {
-            const currentValue = parseFloat(display.textContent.replace(/\./g, '').replace(',', '.'));
+        if (hiddenMenu.style.display === 'flex') {
+            const currentValue = parseFloat(display.textContent);
             display.textContent = (-currentValue).toString();
-            updateDisplay();
+        } else {
+            selectedSlotIndex = selectedSlotIndex % 3 + 1;
+            highlightSelectedSlot();
         }
     }
 
@@ -95,6 +99,11 @@ document.addEventListener('DOMContentLoaded', function() {
         slotInputs[0].value = slots[selectedSlotIndex].name;
         slotInputs[1].value = slots[selectedSlotIndex].phrase;
         slotInputs[2].value = slots[selectedSlotIndex].value;
+    }
+
+    function highlightSelectedSlot() {
+        const numberButton = document.getElementById(selectedSlotIndex.toString());
+        highlightButton(numberButton);
     }
 
     function highlightButton(button) {
@@ -105,15 +114,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function handleOperator(button) {
-        if (firstOperand === '') {
-            firstOperand = display.textContent.replace(/\./g, '').replace(',', '.');
-        } else {
-            calculateResult();
-        }
-        operator = button.id;
-        shouldResetDisplay = true;
         resetOperators();
         button.classList.add('active');
+        operator = button.id;
+        firstOperand = display.textContent;
+        shouldResetDisplay = true;
     }
 
     function resetOperators() {
@@ -123,16 +128,17 @@ document.addEventListener('DOMContentLoaded', function() {
     function clearCalculator() {
         display.textContent = '0';
         firstOperand = '';
+        secondOperand = '';
         operator = '';
-        shouldResetDisplay = false;
         resetOperators();
-        updateDisplay();
     }
 
     function calculateResult() {
-        if (operator && firstOperand !== '') {
-            const secondOperand = display.textContent.replace(/\./g, '').replace(',', '.');
-            let result;
+        secondOperand = display.textContent;
+        if (operator === 'multiply') {
+            display.textContent = slots[selectedSlotIndex].value || '0';
+        } else {
+            let result = 0;
             switch (operator) {
                 case 'add':
                     result = parseFloat(firstOperand) + parseFloat(secondOperand);
@@ -140,30 +146,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 case 'subtract':
                     result = parseFloat(firstOperand) - parseFloat(secondOperand);
                     break;
-                case 'multiply':
-                    result = parseFloat(firstOperand) * parseFloat(secondOperand);
-                    break;
                 case 'divide':
                     result = parseFloat(firstOperand) / parseFloat(secondOperand);
                     break;
             }
             display.textContent = result.toString();
-            firstOperand = '';
-            operator = '';
-            shouldResetDisplay = true;
-            resetOperators();
-            updateDisplay();
         }
+        firstOperand = display.textContent;
+        operator = '';
+        secondOperand = '';
+        resetOperators();
     }
 
     function inputDecimal() {
         if (shouldResetDisplay) {
-            display.textContent = '0,';
+            display.textContent = '0.';
             shouldResetDisplay = false;
-        } else if (!display.textContent.includes(',')) {
-            display.textContent += ',';
+        } else if (!display.textContent.includes('.')) {
+            display.textContent += '.';
         }
-        updateDisplay();
     }
 
     function inputNumber(number) {
@@ -173,7 +174,6 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             display.textContent += number;
         }
-        updateDisplay();
     }
 
     slotInputs.forEach((input, index) => {
@@ -185,15 +185,15 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function formatNumber(number) {
-        let [integerPart, decimalPart] = number.split(',');
-        integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        return decimalPart ? `${integerPart},${decimalPart}` : integerPart;
+        let parts = number.toString().split('.');
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        return parts.join(',');
     }
 
     function updateDisplay() {
         let content = display.textContent;
         if (content !== '0' && content !== '-0') {
-            let formattedNumber = formatNumber(content);
+            let formattedNumber = formatNumber(parseFloat(content));
             display.textContent = formattedNumber;
         }
         
