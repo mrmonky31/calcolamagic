@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateDisplay();
     }
 
-function calculateResult() {
+    function calculateResult() {
         secondOperand = display.textContent.replace(/\./g, '').replace(',', '.');
         if (operator === 'multiply') {
             display.textContent = slots[selectedSlotIndex].value || '0';
@@ -135,16 +135,13 @@ function calculateResult() {
             let result = 0;
             switch (operator) {
                 case 'add':
-                    result = add(parseFloat(firstOperand), parseFloat(secondOperand));
+                    result = parseFloat(firstOperand) + parseFloat(secondOperand);
                     break;
                 case 'subtract':
-                    result = subtract(parseFloat(firstOperand), parseFloat(secondOperand));
-                    break;
-                case 'multiply':
-                    result = multiply(parseFloat(firstOperand), parseFloat(secondOperand));
+                    result = parseFloat(firstOperand) - parseFloat(secondOperand);
                     break;
                 case 'divide':
-                    result = divide(parseFloat(firstOperand), parseFloat(secondOperand));
+                    result = parseFloat(firstOperand) / parseFloat(secondOperand);
                     break;
             }
             display.textContent = result.toString();
@@ -156,40 +153,55 @@ function calculateResult() {
         updateDisplay();
     }
 
-    // Funzioni matematiche precise
-    function add(a, b) {
-        return Number((a + b).toFixed(10));
+    function inputDecimal() {
+        if (shouldResetDisplay) {
+            display.textContent = '0,';
+            shouldResetDisplay = false;
+        } else if (!display.textContent.includes(',')) {
+            display.textContent += ',';
+        }
+        updateDisplay();
     }
 
-    function subtract(a, b) {
-        return Number((a - b).toFixed(10));
+    function inputNumber(number) {
+        if (display.textContent === '0' || shouldResetDisplay) {
+            display.textContent = number;
+            shouldResetDisplay = false;
+        } else {
+            display.textContent += number;
+        }
+        updateDisplay();
     }
 
-    function multiply(a, b) {
-        return Number((a * b).toFixed(10));
-    }
-
-    function divide(a, b) {
-        return Number((a / b).toFixed(10));
-    }
+    slotInputs.forEach((input, index) => {
+        input.addEventListener('input', () => {
+            if (index === 0) slots[selectedSlotIndex].name = input.value;
+            else if (index === 1) slots[selectedSlotIndex].phrase = input.value;
+            else if (index === 2) slots[selectedSlotIndex].value = input.value;
+        });
+    });
 
     function formatNumber(number) {
-        let [integerPart, decimalPart] = number.split('.');
-        integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        // Assicuriamoci che il numero sia trattato come float
+        let num = parseFloat(number);
         
-        if (decimalPart) {
-            // Rimuove gli zeri finali non significativi
-            decimalPart = decimalPart.replace(/0+$/, '');
-            return decimalPart ? `${integerPart},${decimalPart}` : integerPart;
-        }
+        // Formatta il numero con due decimali
+        let formattedNum = num.toFixed(2);
         
-        return integerPart;
+        // Separa la parte intera e decimale
+        let [intPart, decPart] = formattedNum.split('.');
+        
+        // Aggiungi i separatori delle migliaia alla parte intera
+        intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        
+        // Ricomponi il numero con la virgola come separatore decimale
+        return `${intPart},${decPart}`;
     }
 
     function updateDisplay() {
         let content = display.textContent;
         if (content !== '0' && content !== '-0') {
-            let formattedNumber = formatNumber(content);
+            let formattedNumber = formatNumber(parseFloat(content.replace(/\./g, '').replace(',', '.')));
             display.textContent = formattedNumber;
         }
         
@@ -201,6 +213,7 @@ function calculateResult() {
             display.style.fontSize = `${fontSize}rem`;
         }
     }
+
     // Inizializza il display
     updateDisplay();
 });
