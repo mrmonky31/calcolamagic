@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateDisplay();
     }
 
-    function calculateResult() {
+function calculateResult() {
         secondOperand = display.textContent.replace(/\./g, '').replace(',', '.');
         if (operator === 'multiply') {
             display.textContent = slots[selectedSlotIndex].value || '0';
@@ -135,13 +135,16 @@ document.addEventListener('DOMContentLoaded', function() {
             let result = 0;
             switch (operator) {
                 case 'add':
-                    result = parseFloat(firstOperand) + parseFloat(secondOperand);
+                    result = add(parseFloat(firstOperand), parseFloat(secondOperand));
                     break;
                 case 'subtract':
-                    result = parseFloat(firstOperand) - parseFloat(secondOperand);
+                    result = subtract(parseFloat(firstOperand), parseFloat(secondOperand));
+                    break;
+                case 'multiply':
+                    result = multiply(parseFloat(firstOperand), parseFloat(secondOperand));
                     break;
                 case 'divide':
-                    result = parseFloat(firstOperand) / parseFloat(secondOperand);
+                    result = divide(parseFloat(firstOperand), parseFloat(secondOperand));
                     break;
             }
             display.textContent = result.toString();
@@ -153,38 +156,34 @@ document.addEventListener('DOMContentLoaded', function() {
         updateDisplay();
     }
 
-    function inputDecimal() {
-        if (shouldResetDisplay) {
-            display.textContent = '0,';
-            shouldResetDisplay = false;
-        } else if (!display.textContent.includes(',')) {
-            display.textContent += ',';
-        }
-        updateDisplay();
+    // Funzioni matematiche precise
+    function add(a, b) {
+        return Number((a + b).toFixed(10));
     }
 
-    function inputNumber(number) {
-        if (display.textContent === '0' || shouldResetDisplay) {
-            display.textContent = number;
-            shouldResetDisplay = false;
-        } else {
-            display.textContent += number;
-        }
-        updateDisplay();
+    function subtract(a, b) {
+        return Number((a - b).toFixed(10));
     }
 
-    slotInputs.forEach((input, index) => {
-        input.addEventListener('input', () => {
-            if (index === 0) slots[selectedSlotIndex].name = input.value;
-            else if (index === 1) slots[selectedSlotIndex].phrase = input.value;
-            else if (index === 2) slots[selectedSlotIndex].value = input.value;
-        });
-    });
+    function multiply(a, b) {
+        return Number((a * b).toFixed(10));
+    }
+
+    function divide(a, b) {
+        return Number((a / b).toFixed(10));
+    }
 
     function formatNumber(number) {
-        let [integerPart, decimalPart] = number.split(',');
+        let [integerPart, decimalPart] = number.split('.');
         integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        return decimalPart ? `${integerPart},${decimalPart}` : integerPart;
+        
+        if (decimalPart) {
+            // Rimuove gli zeri finali non significativi
+            decimalPart = decimalPart.replace(/0+$/, '');
+            return decimalPart ? `${integerPart},${decimalPart}` : integerPart;
+        }
+        
+        return integerPart;
     }
 
     function updateDisplay() {
@@ -202,7 +201,6 @@ document.addEventListener('DOMContentLoaded', function() {
             display.style.fontSize = `${fontSize}rem`;
         }
     }
-
     // Inizializza il display
     updateDisplay();
 });
