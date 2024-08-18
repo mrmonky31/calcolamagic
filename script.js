@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     closeMenuButton.addEventListener('click', () => {
         hiddenMenu.style.display = 'none';
-        percentPresses = [];
     });
 
     slotButtons.forEach(button => {
@@ -45,14 +44,13 @@ document.addEventListener('DOMContentLoaded', function() {
             handleOperator(button);
         } else if (buttonId === 'equals') {
             calculateResult();
-            highlightButton(button);
         } else if (buttonId === 'decimal') {
             inputDecimal();
-            highlightButton(button);
         } else {
             inputNumber(buttonId);
-            highlightButton(button);
         }
+
+        highlightButton(button);
 
         if (!['divide', 'multiply', 'subtract', 'add'].includes(buttonId)) {
             resetOperators();
@@ -60,7 +58,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function handleSpecialFunction(button) {
-        highlightButton(button);
         if (button.id === 'percent') {
             handlePercentButtonClick();
         } else if (button.id === 'plus-minus') {
@@ -80,10 +77,6 @@ document.addEventListener('DOMContentLoaded', function() {
             hiddenMenu.style.display = 'flex';
             percentPresses = [];
             updateSlotInputs();
-        } else {
-            const currentValue = parseFloat(display.textContent.replace(/\./g, '').replace(',', '.'));
-            display.textContent = (currentValue / 100).toString();
-            updateDisplay();
         }
     }
 
@@ -91,10 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (hiddenMenu.style.display !== 'flex') {
             selectedSlotIndex = selectedSlotIndex % 3 + 1;
             highlightSelectedSlot();
-        } else {
-            const currentValue = parseFloat(display.textContent.replace(/\./g, '').replace(',', '.'));
-            display.textContent = (-currentValue).toString();
-            updateDisplay();
         }
     }
 
@@ -105,8 +94,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function highlightSelectedSlot() {
-        const slotButton = document.querySelector(`[data-slot="${selectedSlotIndex}"]`);
-        highlightButton(slotButton);
+        const numberButton = document.getElementById(selectedSlotIndex.toString());
+        highlightButton(numberButton);
     }
 
     function highlightButton(button) {
@@ -120,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
         resetOperators();
         button.classList.add('active');
         operator = button.id;
-        firstOperand = display.textContent;
+        firstOperand = display.textContent.replace(/\./g, '').replace(',', '.');
         shouldResetDisplay = true;
     }
 
@@ -139,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function calculateResult() {
-        secondOperand = display.textContent;
+        secondOperand = display.textContent.replace(/\./g, '').replace(',', '.');
         if (operator === 'multiply') {
             display.textContent = slots[selectedSlotIndex].value || '0';
         } else {
