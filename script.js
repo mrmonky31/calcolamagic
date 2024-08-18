@@ -160,10 +160,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function inputDecimal() {
         if (shouldResetDisplay) {
-            display.textContent = '0.';
+            display.textContent = '0,';
             shouldResetDisplay = false;
-        } else if (!display.textContent.includes('.')) {
-            display.textContent += '.';
+        } else if (!display.textContent.includes(',')) {
+            display.textContent += ',';
         }
     }
 
@@ -185,16 +185,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function formatNumber(number) {
-    let [integerPart, decimalPart] = number.split(',');
-    integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    return decimalPart ? `${integerPart},${decimalPart}` : integerPart;
+        let [integerPart, decimalPart] = number.split(',');
+        integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        return decimalPart ? `${integerPart},${decimalPart}` : integerPart;
     }
 
     function updateDisplay() {
-    let content = display.textContent;
-    if (content !== '0' && content !== '-0') {
-        let formattedNumber = formatNumber(content);
-        display.textContent = formattedNumber;
+        let content = display.textContent;
+        if (content !== '0' && content !== '-0') {
+            let formattedNumber = formatNumber(content);
+            display.textContent = formattedNumber;
         }
         
         // Ridimensiona il testo se necessario
@@ -205,6 +205,15 @@ document.addEventListener('DOMContentLoaded', function() {
             display.style.fontSize = `${fontSize}rem`;
         }
     }
+
+    // Chiama updateDisplay dopo ogni input o operazione
+    ['inputNumber', 'inputDecimal', 'calculateResult', 'clearCalculator', 'handlePlusMinusButtonClick', 'handlePercentButtonClick'].forEach(functionName => {
+        const originalFunction = this[functionName];
+        this[functionName] = function(...args) {
+            originalFunction.apply(this, args);
+            updateDisplay();
+        };
+    });
 
     // Inizializza il display
     updateDisplay();
