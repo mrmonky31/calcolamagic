@@ -27,7 +27,6 @@ document.addEventListener('DOMContentLoaded', function() {
     closeMenuButton.addEventListener('click', () => {
         hiddenMenu.style.display = 'none';
         percentPresses = [];
-        clearCalculator();
     });
 
     slotButtons.forEach(button => {
@@ -89,14 +88,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function handlePlusMinusButtonClick() {
-        if (hiddenMenu.style.display === 'flex') {
-            const currentValue = parseFloat(display.textContent);
-            display.textContent = (-currentValue).toString();
-        } else {
+        if (hiddenMenu.style.display !== 'flex') {
             selectedSlotIndex = selectedSlotIndex % 3 + 1;
             highlightSelectedSlot();
+        } else {
+            const currentValue = parseFloat(display.textContent.replace(/\./g, '').replace(',', '.'));
+            display.textContent = (-currentValue).toString();
+            updateDisplay();
         }
-        updateDisplay();
     }
 
     function updateSlotInputs() {
@@ -106,8 +105,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function highlightSelectedSlot() {
-        const numberButton = document.getElementById(selectedSlotIndex.toString());
-        highlightButton(numberButton);
+        const slotButton = document.querySelector(`[data-slot="${selectedSlotIndex}"]`);
+        highlightButton(slotButton);
     }
 
     function highlightButton(button) {
@@ -214,24 +213,6 @@ document.addEventListener('DOMContentLoaded', function() {
             display.style.fontSize = `${fontSize}rem`;
         }
     }
-
-    function resetCalculatorState() {
-        percentPresses = [];
-        selectedSlotIndex = 1;
-        currentOperation = '';
-        firstOperand = '';
-        secondOperand = '';
-        operator = '';
-        shouldResetDisplay = false;
-        clearCalculator();
-    }
-
-    document.addEventListener('click', function(event) {
-        if (!hiddenMenu.contains(event.target) && event.target !== percentButton) {
-            hiddenMenu.style.display = 'none';
-            resetCalculatorState();
-        }
-    });
 
     // Inizializza il display
     updateDisplay();
