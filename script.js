@@ -26,6 +26,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     closeMenuButton.addEventListener('click', () => {
         hiddenMenu.style.display = 'none';
+        percentPresses = [];
+        clearCalculator();
     });
 
     slotButtons.forEach(button => {
@@ -80,8 +82,9 @@ document.addEventListener('DOMContentLoaded', function() {
             percentPresses = [];
             updateSlotInputs();
         } else {
-            const currentValue = parseFloat(display.textContent);
+            const currentValue = parseFloat(display.textContent.replace(/\./g, '').replace(',', '.'));
             display.textContent = (currentValue / 100).toString();
+            updateDisplay();
         }
     }
 
@@ -93,6 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
             selectedSlotIndex = selectedSlotIndex % 3 + 1;
             highlightSelectedSlot();
         }
+        updateDisplay();
     }
 
     function updateSlotInputs() {
@@ -130,7 +134,9 @@ document.addEventListener('DOMContentLoaded', function() {
         firstOperand = '';
         secondOperand = '';
         operator = '';
+        shouldResetDisplay = false;
         resetOperators();
+        updateDisplay();
     }
 
     function calculateResult() {
@@ -156,6 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
         operator = '';
         secondOperand = '';
         resetOperators();
+        updateDisplay();
     }
 
     function inputDecimal() {
@@ -165,6 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (!display.textContent.includes(',')) {
             display.textContent += ',';
         }
+        updateDisplay();
     }
 
     function inputNumber(number) {
@@ -174,6 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             display.textContent += number;
         }
+        updateDisplay();
     }
 
     slotInputs.forEach((input, index) => {
@@ -206,13 +215,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Chiama updateDisplay dopo ogni input o operazione
-    ['inputNumber', 'inputDecimal', 'calculateResult', 'clearCalculator', 'handlePlusMinusButtonClick', 'handlePercentButtonClick'].forEach(functionName => {
-        const originalFunction = this[functionName];
-        this[functionName] = function(...args) {
-            originalFunction.apply(this, args);
-            updateDisplay();
-        };
+    function resetCalculatorState() {
+        percentPresses = [];
+        selectedSlotIndex = 1;
+        currentOperation = '';
+        firstOperand = '';
+        secondOperand = '';
+        operator = '';
+        shouldResetDisplay = false;
+        clearCalculator();
+    }
+
+    document.addEventListener('click', function(event) {
+        if (!hiddenMenu.contains(event.target) && event.target !== percentButton) {
+            hiddenMenu.style.display = 'none';
+            resetCalculatorState();
+        }
     });
 
     // Inizializza il display
