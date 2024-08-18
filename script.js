@@ -129,23 +129,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function calculateResult() {
         secondOperand = display.textContent.replace(/\./g, '').replace(',', '.');
-        if (operator === 'multiply') {
-            display.textContent = slots[selectedSlotIndex].value || '0';
-        } else {
-            let result = 0;
-            switch (operator) {
-                case 'add':
-                    result = parseFloat(firstOperand) + parseFloat(secondOperand);
-                    break;
-                case 'subtract':
-                    result = parseFloat(firstOperand) - parseFloat(secondOperand);
-                    break;
-                case 'divide':
+        let result = 0;
+        switch (operator) {
+            case 'add':
+                result = parseFloat(firstOperand) + parseFloat(secondOperand);
+                break;
+            case 'subtract':
+                result = parseFloat(firstOperand) - parseFloat(secondOperand);
+                break;
+            case 'divide':
+                if (parseFloat(secondOperand) !== 0) {
                     result = parseFloat(firstOperand) / parseFloat(secondOperand);
-                    break;
-            }
-            display.textContent = result.toString();
+                } else {
+                    result = 'Infinity';
+                }
+                break;
+            case 'multiply':
+                result = parseFloat(firstOperand) * parseFloat(secondOperand);
+                break;
         }
+        display.textContent = result.toString();
         firstOperand = display.textContent;
         operator = '';
         secondOperand = '';
@@ -182,19 +185,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function formatNumber(number) {
-        // Assicuriamoci che il numero sia trattato come float
         let num = parseFloat(number);
-        
-        // Formatta il numero con due decimali
         let formattedNum = num.toFixed(2);
-        
-        // Separa la parte intera e decimale
         let [intPart, decPart] = formattedNum.split('.');
-        
-        // Aggiungi i separatori delle migliaia alla parte intera
         intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        
-        // Ricomponi il numero con la virgola come separatore decimale
         return `${intPart},${decPart}`;
     }
 
@@ -205,7 +199,6 @@ document.addEventListener('DOMContentLoaded', function() {
             display.textContent = formattedNumber;
         }
         
-        // Ridimensiona il testo se necessario
         let fontSize = 5.5;
         display.style.fontSize = `${fontSize}rem`;
         while (display.scrollWidth > display.offsetWidth && fontSize > 1) {
@@ -214,6 +207,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Inizializza il display
     updateDisplay();
 });
