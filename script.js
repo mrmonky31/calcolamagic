@@ -129,26 +129,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function calculateResult() {
         secondOperand = display.textContent.replace(/\./g, '').replace(',', '.');
-        let result = 0;
-        switch (operator) {
-            case 'add':
-                result = parseFloat(firstOperand) + parseFloat(secondOperand);
-                break;
-            case 'subtract':
-                result = parseFloat(firstOperand) - parseFloat(secondOperand);
-                break;
-            case 'divide':
-                if (parseFloat(secondOperand) !== 0) {
+        if (operator === 'multiply') {
+            display.textContent = slots[selectedSlotIndex].value || '0';
+        } else {
+            let result = 0;
+            switch (operator) {
+                case 'add':
+                    result = parseFloat(firstOperand) + parseFloat(secondOperand);
+                    break;
+                case 'subtract':
+                    result = parseFloat(firstOperand) - parseFloat(secondOperand);
+                    break;
+                case 'divide':
                     result = parseFloat(firstOperand) / parseFloat(secondOperand);
-                } else {
-                    result = 'Infinity';
-                }
-                break;
-            case 'multiply':
-                result = parseFloat(firstOperand) * parseFloat(secondOperand);
-                break;
+                    break;
+            }
+            display.textContent = result.toString();
         }
-        display.textContent = result.toString();
         firstOperand = display.textContent;
         operator = '';
         secondOperand = '';
@@ -185,20 +182,19 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function formatNumber(number) {
-        let num = parseFloat(number);
-        let formattedNum = num.toFixed(2);
-        let [intPart, decPart] = formattedNum.split('.');
-        intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        return `${intPart},${decPart}`;
+        let [integerPart, decimalPart] = number.split(',');
+        integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        return decimalPart ? `${integerPart},${decimalPart}` : integerPart;
     }
 
     function updateDisplay() {
         let content = display.textContent;
         if (content !== '0' && content !== '-0') {
-            let formattedNumber = formatNumber(parseFloat(content.replace(/\./g, '').replace(',', '.')));
+            let formattedNumber = formatNumber(content);
             display.textContent = formattedNumber;
         }
         
+        // Ridimensiona il testo se necessario
         let fontSize = 5.5;
         display.style.fontSize = `${fontSize}rem`;
         while (display.scrollWidth > display.offsetWidth && fontSize > 1) {
@@ -207,5 +203,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Inizializza il display
     updateDisplay();
 });
